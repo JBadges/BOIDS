@@ -1,8 +1,8 @@
 #include <SDL2/SDL.h>
 #include "SDL2/SDL_image.h"
 
-#include <headers/graphics.h>
-#include <headers/globals.h>
+#include <headers/engn/graphics.h>
+#include <headers/engn/globals.h>
 
 
 /* Graphics class
@@ -26,8 +26,8 @@ SDL_Surface* Graphics::loadImage(const std::string &filePath) {
     return m_spriteSheets[filePath];
 }
 
-void Graphics::blitSurface(SDL_Texture *texture, SDL_Rect *sourceRect, SDL_Rect *destRect) {
-    SDL_RenderCopy(this->m_renderer, texture, sourceRect, destRect);
+void Graphics::blitSurface(SDL_Texture *texture, SDL_Rect *sourceRect, SDL_Rect *destRect, float angle) {
+    SDL_RenderCopyEx(this->m_renderer, texture, sourceRect, destRect, angle, NULL, SDL_RendererFlip::SDL_FLIP_NONE);
 }
 
 void Graphics::flip() {

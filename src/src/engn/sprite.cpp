@@ -1,5 +1,5 @@
-#include "../headers/sprite.h"
-#include "headers/graphics.h"
+#include "headers/engn/sprite.h"
+#include "headers/engn/graphics.h"
 
 Sprite::Sprite() {
 
@@ -23,9 +23,9 @@ Sprite::~Sprite() {
 
 }
 
-void Sprite::draw(Graphics &graphics, int x, int y, float scale) {
+void Sprite::draw(Graphics &graphics, int x, int y, float scale, float angle) {
     SDL_Rect destRect = {x, y, (int) (this->m_srcRect.w * scale), (int) (this->m_srcRect.h * scale)};
-    graphics.blitSurface(this->m_spriteSheet, &this->m_srcRect, &destRect);
+    graphics.blitSurface(this->m_spriteSheet, &this->m_srcRect, &destRect, angle);
 }
 
 void Sprite::update() {

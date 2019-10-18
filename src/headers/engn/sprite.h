@@ -18,7 +18,7 @@ public:
            float posX, float posY);
     virtual ~Sprite();
     virtual void update();
-    void draw(Graphics& graphics, int x, int y, float scale);
+    void draw(Graphics& graphics, int x, int y, float scale, float angle);
 
 private:
     SDL_Rect m_srcRect;

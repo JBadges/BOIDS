@@ -6,7 +6,7 @@
 #define BOIDS_GLOBALS_H
 
 namespace Globals {
-    const int kScreenWidth = 600;
+    const int kScreenWidth = 800;
     const int kScreenHeight = 600;
 
     const float kSpriteScale = 0.5;

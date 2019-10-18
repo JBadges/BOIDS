@@ -5,7 +5,7 @@
 #ifndef BOIDS_GAME_H
 #define BOIDS_GAME_H
 
-#include "sprite.h"
+#include <headers/bird.h>
 
 class Graphics;
 
@@ -19,7 +19,7 @@ private:
     void draw(Graphics &graphics);
     void update(float elapsedTime);
 
-    Sprite m_bird;
+    std::vector<std::shared_ptr<Bird>> m_birds;
 };
 
 

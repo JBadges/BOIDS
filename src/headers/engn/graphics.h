@@ -24,7 +24,7 @@ public:
      * @param sourceRect
      * @param destRect
      */
-    void blitSurface(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destRect);
+    void blitSurface(SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destRect, float angle);
 
     /**
      * Renders everything to the screen
