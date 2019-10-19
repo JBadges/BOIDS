@@ -39,7 +39,7 @@ Point Bird::cohesion() {
     if(this->m_flock.size() > 0) {
         steer = steer / this->m_flock.size();
         steer = steer - *this;
-        steer = (steer / steer.magnitude()) * 0.08;
+        steer = (steer / steer.magnitude()) * 0.1;
         return steer;
     } else {
         return {0,0};
@@ -58,7 +58,19 @@ Point Bird::separation() {
     return steer;
 }
 
-void Bird::update(int dt, std::vector<std::shared_ptr<Bird>>& birds) {
+Point Bird::obstacleDir() {
+    Point steer (0,0);
+    for(std::shared_ptr<Obstacle>& p : this->m_obstacles) {
+        Point pos = *this - *p;
+        pos = pos / pos.magnitude();
+        pos = pos / this->dist(*p);
+        steer = steer + pos;
+    }
+
+    return steer;
+}
+
+void Bird::update(int dt, std::vector<std::shared_ptr<Bird>>& birds, std::vector<std::shared_ptr<Obstacle>>& obstacles) {
     // Normalize heading on each start
     while(this->m_heading < 0) {
         this->m_heading += 360;
@@ -69,6 +81,7 @@ void Bird::update(int dt, std::vector<std::shared_ptr<Bird>>& birds) {
 
     if(true || flockCounter % 25 == 0) {
         updateFlock(birds, this->m_radius);
+        updateObstacles(obstacles, this->m_radius);
     }
     flockCounter++;
 
@@ -87,16 +100,21 @@ void Bird::update(int dt, std::vector<std::shared_ptr<Bird>>& birds) {
     Point alignP = alignment();
     Point coheP = cohesion();
     Point sepP = separation();
+    Point obstP = obstacleDir();
+    obstP = obstP * 3;
+    Point rand = Point((std::rand() % 10000 - 5000) / 10000.f, (std::rand() % 10000 - 5000) / 10000.f);
+    rand = rand * 0.1;
 
-    Point final = alignP + coheP + sepP;
+
+    Point final = alignP + coheP + sepP + obstP + rand;
 
     Point delta = final + m_move;
 
-    if (delta.magnitude() > 100 * (dt/1000.0)) {
-        delta = (delta / delta.magnitude()) * (100 * (dt/1000.0));
+    if (delta.magnitude() > 75 * (dt/1000.0)) {
+        delta = (delta / delta.magnitude()) * (75 * (dt/1000.0));
     }
-    if (delta.magnitude() < 50 * (dt/1000.0)) {
-        delta = (delta / delta.magnitude()) * (50 * (dt/1000.0));
+    if (delta.magnitude() < 30 * (dt/1000.0)) {
+        delta = (delta / delta.magnitude()) * (30 * (dt/1000.0));
     }
 
     this->add(delta);
@@ -117,6 +135,15 @@ void Bird::updateFlock(std::vector<std::shared_ptr<Bird>>& birds, float radius) 
     for(std::shared_ptr<Bird>& b : birds) {
         if(b->dist(*this) > 0.1 && b->dist(*this) <= radius) {
             m_flock.push_back(b);
+        }
+    }
+}
+
+void Bird::updateObstacles(std::vector<std::shared_ptr<Obstacle>>& obstacles, float radius) {
+    this->m_obstacles.clear();
+    for(std::shared_ptr<Obstacle>& obstacle : obstacles) {
+        if(obstacle->dist(*this) > 0.1 && obstacle->dist(*this) <= radius) {
+            this->m_obstacles.push_back(obstacle);
         }
     }
 }

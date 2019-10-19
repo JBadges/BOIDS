@@ -9,7 +9,7 @@ namespace Globals {
     const int kScreenWidth = 800;
     const int kScreenHeight = 600;
 
-    const float kSpriteScale = 0.5;
+    const float kSpriteScale = 0.15;
 }
 
 #endif //BOIDS_GLOBALS_H

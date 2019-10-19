@@ -1,3 +1,4 @@
+#include <headers/engn/globals.h>
 #include "headers/engn/input.h"
 
 void Input::beginNewFrame() {
@@ -25,4 +26,15 @@ bool Input::wasKeyReleased(SDL_Scancode key) {
 
 bool Input::isKeyHeld(SDL_Scancode key) {
     return this->m_heldKeys[key];
+}
+
+void Input::onMousePress(SDL_MouseButtonEvent b, Graphics& graphics, bool shouldPlaceBird, std::vector<std::shared_ptr<Bird>>& birds, std::vector<std::shared_ptr<Obstacle>>& obstacles) {
+    if(shouldPlaceBird) {
+        birds.push_back(std::shared_ptr<Bird>(
+                new Bird(graphics, {static_cast<float>(b.x), Globals::kScreenHeight - static_cast<float>(b.y)},
+                         rand() % 360)));
+    } else {
+        obstacles.push_back(std::shared_ptr<Obstacle>(
+                new Obstacle(graphics, {static_cast<float>(b.x), Globals::kScreenHeight - static_cast<float>(b.y)})));
+    }
 }
