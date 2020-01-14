@@ -22,9 +22,13 @@ public:
     float getY() const;
 
     Point operator+(const Point& p);
+    void operator+=(const Point& p);
     Point operator-(const Point& p);
+    void operator-=(const Point& p);
     Point operator*(const float& d);
+    void operator*=(const float& d);
     Point operator/(const float& d);
+    void operator/=(const float& d);
 private:
     float m_x, m_y;
 };

@@ -24,8 +24,8 @@ Point Bird::alignment() {
     Point steer (0,0);
     for(std::shared_ptr<Bird>& p : this->m_flock) {
         Point head (p->m_move);
-        head = head / this->wrappedDist(*p);
-        steer = steer + head;
+        head /= this->wrappedDist(*p);
+        steer += head;
     }
 
     return steer;
@@ -34,12 +34,12 @@ Point Bird::alignment() {
 Point Bird::cohesion() {
     Point steer (0,0);
     for(std::shared_ptr<Bird>& p : this->m_flock) {
-        steer = steer + *p;
+        steer += *p;
     }
     if(this->m_flock.size() > 0) {
-        steer = steer / this->m_flock.size();
-        steer = steer - *this;
-        steer = (steer / steer.magnitude()) * 0.1;
+        steer /= this->m_flock.size();
+        steer -= *this;
+        steer /= steer.magnitude();
         return steer;
     } else {
         return {0,0};
@@ -50,9 +50,9 @@ Point Bird::separation() {
     Point steer (0,0);
     for(std::shared_ptr<Bird>& p : this->m_flock) {
         Point pos = *this - *p;
-        pos = pos / pos.magnitude();
-        pos = pos / this->wrappedDist(*p);
-        steer = steer + pos;
+        pos /= pos.magnitude();
+        pos /= this->wrappedDist(*p);
+        steer += pos;
     }
 
     return steer;
@@ -62,10 +62,9 @@ Point Bird::obstacleDir() {
     Point steer (0,0);
     for(std::shared_ptr<Obstacle>& p : this->m_obstacles) {
         Point pos = *this - *p;
-        pos = pos / pos.magnitude();
-        pos = pos / this->wrappedDist(*p);
-        steer = steer + pos;
-        steer = steer * 1.2;
+        pos /= pos.magnitude();
+        pos /= this->wrappedDist(*p);
+        steer += pos;
     }
 
     return steer;
@@ -80,6 +79,7 @@ void Bird::update(int dt, std::vector<std::shared_ptr<Bird>>& birds, std::vector
         this->m_heading -= 360;
     }
 
+    // Optimization if needed
     if(true || flockCounter % 25 == 0) {
         updateFlock(birds, this->m_radius);
         updateObstacles(obstacles, this->m_radius);
@@ -100,12 +100,12 @@ void Bird::update(int dt, std::vector<std::shared_ptr<Bird>>& birds, std::vector
 
     Point alignP = alignment();
     Point coheP = cohesion();
+    coheP *= 0.1;
     Point sepP = separation();
     Point obstP = obstacleDir();
-    obstP = obstP * 3;
+    obstP *= 3.6;
     Point rand = Point((std::rand() % 10000 - 5000) / 10000.f, (std::rand() % 10000 - 5000) / 10000.f);
-//    rand = rand * 0.1;
-    rand = rand * 0;
+    rand *= 0.1;
 
     Point final = alignP + coheP + sepP + obstP + rand;
 
@@ -123,7 +123,7 @@ void Bird::update(int dt, std::vector<std::shared_ptr<Bird>>& birds, std::vector
         this->m_move = delta;
     }
 
-    this->m_move = (this->m_move / this->m_move.magnitude());
+    this->m_move /= this->m_move.magnitude();
     m_heading = atan2(delta.getY(), delta.getX()) * 180/M_PI;
 }
 

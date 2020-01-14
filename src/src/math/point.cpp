@@ -45,16 +45,36 @@ Point Point::operator+(const Point &p) {
     return {this->m_x + p.m_x, this->m_y + p.m_y};
 }
 
+void Point::operator+=(const Point &p) {
+    this->m_x += p.m_x;
+    this->m_y += p.m_y;
+}
+
 Point Point::operator-(const Point &p) {
     return {this->m_x - p.m_x, this->m_y - p.m_y};
+}
+
+void Point::operator-=(const Point &p) {
+    this->m_x -= p.m_x;
+    this->m_y -= p.m_y;
 }
 
 Point Point::operator*(const float &d) {
     return {this->m_x * d, this->m_y * d};
 }
 
+void Point::operator*=(const float &d) {
+     this->m_x *= d;
+     this->m_y *= d;
+}
+
 Point Point::operator/(const float &d) {
     return {this->m_x / d, this->m_y / d};
+}
+
+void Point::operator/=(const float &d) {
+    this->m_x /= d;
+    this->m_y /= d;
 }
 
 void Point::add(Point &p) {
