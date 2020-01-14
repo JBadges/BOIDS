@@ -4,6 +4,7 @@
 
 #include <headers/math/point.h>
 #include <cmath>
+#include <headers/engn/globals.h>
 
 Point::Point() : m_x(0), m_y(0) {
 
@@ -59,5 +60,22 @@ Point Point::operator/(const float &d) {
 void Point::add(Point &p) {
     this->m_x += p.m_x;
     this->m_y += p.m_y;
+}
+
+float Point::wrappedDist(const Point &p) {
+    double leftX = p.getX() - Globals::kScreenWidth;
+    double rightX = p.getX() + Globals::kScreenWidth;
+    double downY = p.getY() - Globals::kScreenHeight;
+    double upY = p.getY() + Globals::kScreenHeight;
+    double min = dist(p);
+    min = std::fmin(min, dist(Point(leftX, p.getY())));
+    min = std::fmin(min, dist(Point(rightX, p.getY())));
+    min = std::fmin(min, dist(Point(p.getX(), upY)));
+    min = std::fmin(min, dist(Point(p.getX(), downY)));
+    min = std::fmin(min, dist(Point(leftX, upY)));
+    min = std::fmin(min, dist(Point(rightX, upY)));
+    min = std::fmin(min, dist(Point(leftX, downY)));
+    min = std::fmin(min, dist(Point(rightX, downY)));
+    return min;
 }
 

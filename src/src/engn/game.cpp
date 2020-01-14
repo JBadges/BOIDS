@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include "SDL2/SDL.h"
+#include "cmath"
 
 #include "headers/engn/game.h"
 #include "headers/engn/graphics.h"
@@ -27,13 +28,13 @@ void Game::gameLoop() {
     Input input;
     SDL_Event event;
 
-    int birdAmount = 200;
+    int birdAmount = 100;
     for(int i = 0; i < birdAmount; i++) {
         this->m_birds.push_back(std::shared_ptr<Bird>(new Bird(graphics, {static_cast<float>(rand() % (Globals::kScreenWidth - 80)) + 40, static_cast<float>(rand() % (Globals::kScreenHeight - 89)) + 40}, rand() % 360)));
     }
 
 
-    int amount = 50;
+    int amount = 40;
     for(int i = 0; i < amount; i++) {
         this->m_obsticals.push_back(std::shared_ptr<Obstacle>(new Obstacle(graphics, {static_cast<float>(Globals::kScreenWidth / amount * i), 10})));
         this->m_obsticals.push_back(std::shared_ptr<Obstacle>(new Obstacle(graphics, {static_cast<float>(Globals::kScreenWidth / amount * i), Globals::kScreenHeight - 10})));
@@ -91,12 +92,15 @@ void Game::draw(Graphics &graphics) {
 
 
     for(std::shared_ptr<Bird>& bird : this->m_birds) {
-        bird->draw(graphics, bird->getX(), Globals::kScreenHeight - bird->getY(),
-                          Globals::kSpriteScale, 90 - bird->getHeading());
+        const double scale = Globals::kSpriteScale;
+        const double angle = 90 - bird->getHeading();
+        bird->draw(graphics, bird->getX() - bird->getWidth()/2 * scale * std::cos((90 - bird->getHeading()) * M_PI/180.0), Globals::kScreenHeight - bird->getY() - bird->getWidth()/2 * scale * std::sin((90 - bird->getHeading()) * M_PI/180.0),
+                          Globals::kSpriteScale, angle);
     }
     for(std::shared_ptr<Obstacle>& obstical : this->m_obsticals) {
-        obstical->draw(graphics, obstical->getX(), Globals::kScreenHeight - obstical->getY(),
-                       0.75, 0);
+        const double scale = 0.5;
+        obstical->draw(graphics, obstical->getX() - obstical->getWidth()/2 * scale,Globals::kScreenHeight - obstical->getY() - obstical->getHeight()/2 * scale,
+                       scale, 0);
     }
     graphics.flip();
 }

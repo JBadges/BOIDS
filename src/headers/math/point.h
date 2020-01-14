@@ -12,6 +12,7 @@ public:
 
     float magnitude();
     float dist(const Point& p);
+    float wrappedDist(const Point& p);
 
     void move(float dist, float angle);
     void add(Point& p);

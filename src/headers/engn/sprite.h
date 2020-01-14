@@ -19,6 +19,8 @@ public:
     virtual ~Sprite();
     virtual void update();
     void draw(Graphics& graphics, int x, int y, float scale, float angle);
+    double getWidth();
+    double getHeight();
 
 private:
     SDL_Rect m_srcRect;

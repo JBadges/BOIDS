@@ -31,3 +31,11 @@ void Sprite::draw(Graphics &graphics, int x, int y, float scale, float angle) {
 void Sprite::update() {
 
 }
+
+double Sprite::getWidth() {
+    return m_srcRect.w;
+}
+
+double Sprite::getHeight(){
+    return m_srcRect.h;
+}

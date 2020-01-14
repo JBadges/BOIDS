@@ -24,7 +24,7 @@ Point Bird::alignment() {
     Point steer (0,0);
     for(std::shared_ptr<Bird>& p : this->m_flock) {
         Point head (p->m_move);
-        head = head / this->dist(*p);
+        head = head / this->wrappedDist(*p);
         steer = steer + head;
     }
 
@@ -51,7 +51,7 @@ Point Bird::separation() {
     for(std::shared_ptr<Bird>& p : this->m_flock) {
         Point pos = *this - *p;
         pos = pos / pos.magnitude();
-        pos = pos / this->dist(*p);
+        pos = pos / this->wrappedDist(*p);
         steer = steer + pos;
     }
 
@@ -63,8 +63,9 @@ Point Bird::obstacleDir() {
     for(std::shared_ptr<Obstacle>& p : this->m_obstacles) {
         Point pos = *this - *p;
         pos = pos / pos.magnitude();
-        pos = pos / this->dist(*p);
+        pos = pos / this->wrappedDist(*p);
         steer = steer + pos;
+        steer = steer * 1.2;
     }
 
     return steer;
@@ -103,8 +104,8 @@ void Bird::update(int dt, std::vector<std::shared_ptr<Bird>>& birds, std::vector
     Point obstP = obstacleDir();
     obstP = obstP * 3;
     Point rand = Point((std::rand() % 10000 - 5000) / 10000.f, (std::rand() % 10000 - 5000) / 10000.f);
-    rand = rand * 0.1;
-
+//    rand = rand * 0.1;
+    rand = rand * 0;
 
     Point final = alignP + coheP + sepP + obstP + rand;
 
@@ -133,7 +134,7 @@ float Bird::getHeading() {
 void Bird::updateFlock(std::vector<std::shared_ptr<Bird>>& birds, float radius) {
     this->m_flock.clear();
     for(std::shared_ptr<Bird>& b : birds) {
-        if(b->dist(*this) > 0.1 && b->dist(*this) <= radius) {
+        if(b->wrappedDist(*this) > 0.1 && b->wrappedDist(*this) <= radius) {
             m_flock.push_back(b);
         }
     }
@@ -142,7 +143,7 @@ void Bird::updateFlock(std::vector<std::shared_ptr<Bird>>& birds, float radius) 
 void Bird::updateObstacles(std::vector<std::shared_ptr<Obstacle>>& obstacles, float radius) {
     this->m_obstacles.clear();
     for(std::shared_ptr<Obstacle>& obstacle : obstacles) {
-        if(obstacle->dist(*this) > 0.1 && obstacle->dist(*this) <= radius) {
+        if(obstacle->wrappedDist(*this) > 0.1 && obstacle->wrappedDist(*this) <= radius) {
             this->m_obstacles.push_back(obstacle);
         }
     }
